@@ -1,0 +1,311 @@
+{
+  "project": "MEKA",
+  "version": 1,
+  "rules": [
+    "Una sola feature in_progress por scope.",
+    "Estados: pending -> spec_ready -> in_progress -> done (o blocked en cualquier punto, con blocked_reason).",
+    "Pasar de spec_ready a in_progress exige aprobación humana y registrar approved_at (YYYY-MM-DD).",
+    "Una feature solo pasa a in_progress si todas las de depends_on están done.",
+    "Los criterios de acceptance son el piso del alcance: el spec_author los refina en requisitos EARS, no los recorta.",
+    "open_questions debe resolverlas el humano durante la etapa de spec; el spec_author no las responde por su cuenta."
+  ],
+  "features": [
+    {
+      "id": "F01",
+      "name": "project_scaffold",
+      "title": "Andamiaje del repositorio y puerta de verificación",
+      "phase": "mvp",
+      "scope": "app",
+      "depends_on": [],
+      "sdd": true,
+      "security_review": false,
+      "description": "Proyecto Vite + React + TypeScript estricto con ESLint, Prettier, Vitest y Playwright configurados, y un comando único de verificación.",
+      "acceptance": [
+        "npm run lint, typecheck, test, build y verify existen y terminan en verde sobre el proyecto vacío.",
+        "Existe al menos un test unitario de humo y un test e2e de humo que pasan.",
+        "La estructura de carpetas de src/ coincide con docs/architecture.md.",
+        "Las fuentes de docs/design.md (Basic, Montserrat, Roboto Mono) y los tokens de color/espaciado están disponibles como variables globales de estilo.",
+        "./init.sh termina en verde y ya no muestra la advertencia de 'sin scaffold'."
+      ],
+      "open_questions": [
+        "¿Se confirma React como librería de UI o el equipo prefiere otra (Svelte, Vue, vanilla)?",
+        "¿Dónde se publicará la app (para decidir si hace falta configuración de base path)?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F02",
+      "name": "typing_engine",
+      "title": "Motor de tipeo",
+      "phase": "mvp",
+      "scope": "app",
+      "depends_on": ["project_scaffold"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Módulo puro, sin DOM ni React, que recibe un texto objetivo y una secuencia de entradas del usuario y mantiene el estado de la sesión de tipeo.",
+      "acceptance": [
+        "Dado un texto objetivo, el motor expone posición del cursor, caracteres correctos, errores por posición y si la sesión terminó.",
+        "Una entrada igual al carácter esperado avanza el cursor; una distinta se registra como error en esa posición.",
+        "El motor es determinista: el tiempo se inyecta, no se lee del reloj global.",
+        "Soporta caracteres del español: tildes, diéresis, ñ, ¿ y ¡, incluyendo entradas que llegan por teclas muertas.",
+        "Una sesión terminada no acepta más entradas.",
+        "Una entrada inválida o un texto vacío producen un error explícito, nunca un estado corrupto."
+      ],
+      "open_questions": [
+        "¿Un error bloquea el avance hasta corregirlo, o el cursor avanza igual marcando el error?",
+        "¿Se permite retroceder con Backspace? ¿Los errores corregidos cuentan para la precisión?",
+        "¿Cómo se manejan los saltos de línea y los espacios múltiples del texto objetivo?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F03",
+      "name": "metrics",
+      "title": "Módulo de métricas",
+      "phase": "mvp",
+      "scope": "app",
+      "depends_on": ["project_scaffold"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Funciones puras que calculan velocidad, precisión y puntaje a partir del estado de una sesión.",
+      "acceptance": [
+        "Velocidad en palabras por minuto, con la palabra definida como 5 caracteres, salvo que la spec apruebe otra definición.",
+        "Precisión como proporción de entradas correctas sobre el total de entradas.",
+        "El puntaje penaliza los errores: escribir rápido pero mal no puede puntuar más que escribir un poco más lento y bien.",
+        "Las funciones no fallan con sesiones de duración cero o sin entradas: devuelven un valor definido y documentado.",
+        "Las fórmulas están documentadas en la spec con ejemplos numéricos verificables por test."
+      ],
+      "open_questions": [
+        "¿Cuál es la fórmula exacta del puntaje?",
+        "¿Se descuentan los tiempos de inactividad del cálculo de velocidad? ¿Con qué umbral?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F04",
+      "name": "text_input_normalization",
+      "title": "Entrada de texto pegado y normalización",
+      "phase": "mvp",
+      "scope": "app",
+      "depends_on": ["project_scaffold"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Cuadro de texto donde el usuario pega su material de estudio y función pura que lo normaliza para poder tipearlo.",
+      "acceptance": [
+        "El usuario puede pegar texto plano en un cuadro de texto y confirmarlo para practicar.",
+        "normalizeText es una función pura que unifica a NFC y elimina caracteres de ancho cero y espacios no separables.",
+        "Las comillas y rayas tipográficas se tratan según una política configurable y documentada.",
+        "Un texto vacío o formado solo por espacios se rechaza con un mensaje claro, sin romper la pantalla.",
+        "Hay un límite de longitud documentado y un mensaje claro al superarlo.",
+        "Todo el flujo se puede realizar con el teclado."
+      ],
+      "open_questions": [
+        "¿Qué política por defecto para comillas y rayas tipográficas: conservarlas o reemplazarlas por equivalentes simples?",
+        "¿Cuál es el límite de longitud del texto en el MVP?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F05",
+      "name": "practice_screen",
+      "title": "Pantalla de práctica",
+      "phase": "mvp",
+      "scope": "app",
+      "depends_on": ["typing_engine", "metrics", "text_input_normalization"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Pantalla donde se muestra el texto objetivo, se tipea y se ven las métricas en tiempo real.",
+      "acceptance": [
+        "Se muestra el texto objetivo con el cursor y el estado de cada carácter (pendiente, correcto, error).",
+        "Velocidad, precisión y puntaje se actualizan en vivo mientras se escribe.",
+        "Al terminar el texto, la sesión finaliza y se pasa a los resultados.",
+        "Las tildes y la ñ se pueden tipear con un teclado en español sin que el motor las trate como error por la tecla muerta.",
+        "La pantalla respeta docs/design.md: colores, tipografías, radios de 0px y trato de vos en los textos.",
+        "Todo el flujo se puede realizar con el teclado."
+      ],
+      "open_questions": [
+        "El DESIGN.md no define color de carácter correcto, de cursor ni de foco, ni el color de texto sobre el botón primario: ¿cuáles son?",
+        "¿Qué fuente se usa para el texto a tipear? (El DESIGN.md define Roboto Mono pero no a qué elemento se aplica.)",
+        "El color de error 9E1A30 tiene poco contraste sobre el fondo 003052: ¿se mantiene, se ajusta o se refuerza con un recurso no cromático (subrayado, ícono)?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F06",
+      "name": "session_results_history",
+      "title": "Resultados de sesión e historial local",
+      "phase": "mvp",
+      "scope": "app",
+      "depends_on": ["metrics", "practice_screen"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Pantalla de resultados al terminar una sesión y persistencia local del historial.",
+      "acceptance": [
+        "Al terminar, se muestran velocidad, precisión, puntaje y tiempo total de la sesión.",
+        "Cada sesión se guarda en el navegador y se puede ver en un historial.",
+        "El esquema de datos guardados está versionado.",
+        "Si los datos guardados están corruptos o son de una versión desconocida, la app se recupera sin bloquearse y lo informa al usuario.",
+        "Si el almacenamiento no está disponible o está lleno, la app sigue funcionando y avisa que no se guardará el historial."
+      ],
+      "open_questions": [
+        "¿Cuántas sesiones se conservan en el historial?",
+        "¿Se guarda el texto completo de cada sesión o solo una referencia (título o fragmento)?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F07",
+      "name": "text_library",
+      "title": "Biblioteca de textos con segmentación y progreso",
+      "phase": "mvp_opcional",
+      "scope": "app",
+      "depends_on": ["text_input_normalization", "session_results_history"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Guardar textos de estudio, dividirlos en tramos practicables y retomar donde se dejó.",
+      "acceptance": [
+        "El usuario puede guardar un texto con título y volver a practicarlo.",
+        "Los textos largos se dividen en tramos (por párrafo u oración) y el progreso por tramo se conserva.",
+        "El usuario puede retomar un texto desde el primer tramo sin completar.",
+        "Los datos guardados siguen las mismas garantías de versionado y recuperación que el historial."
+      ],
+      "open_questions": [
+        "¿El criterio de segmentación es por párrafo, por oración o por cantidad de caracteres?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F08",
+      "name": "daily_goal",
+      "title": "Meta diaria de práctica",
+      "phase": "mvp_opcional",
+      "scope": "app",
+      "depends_on": ["session_results_history"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Objetivo diario en minutos de práctica con seguimiento del avance.",
+      "acceptance": [
+        "El usuario puede definir una meta diaria en minutos.",
+        "Se muestra el avance del día calculado a partir del historial.",
+        "El día se determina con una regla documentada de zona horaria."
+      ],
+      "open_questions": [
+        "¿Cuál es la meta por defecto y qué rango permite configurar el usuario?",
+        "¿Se muestra racha de días consecutivos? (cuidado con las métricas de vanidad)"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F09",
+      "name": "txt_upload",
+      "title": "Subida de archivos TXT",
+      "phase": "post_mvp",
+      "scope": "app",
+      "depends_on": ["text_input_normalization"],
+      "sdd": true,
+      "security_review": true,
+      "description": "Cargar un archivo .txt como fuente del texto de estudio.",
+      "acceptance": [
+        "El usuario puede elegir un archivo .txt y su contenido pasa por la misma normalización que el texto pegado.",
+        "Se detecta la codificación (al menos UTF-8 y Latin-1) y se informa si no se pudo leer.",
+        "Un archivo vacío, demasiado grande o de otro tipo se rechaza con un mensaje claro.",
+        "El archivo se procesa localmente, sin enviarlo a ningún servidor."
+      ],
+      "open_questions": [],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F10",
+      "name": "pdf_import",
+      "title": "Importación de PDF",
+      "phase": "post_mvp",
+      "scope": "app",
+      "depends_on": ["txt_upload"],
+      "sdd": true,
+      "security_review": true,
+      "description": "Extraer y limpiar texto de PDFs de estudio.",
+      "acceptance": [
+        "Se extrae el texto de un PDF con texto seleccionable.",
+        "Una etapa de limpieza resuelve saltos de línea forzados, encabezados y números de página, con tests sobre PDFs de muestra.",
+        "Un PDF corrupto, protegido o escaneado sin texto produce un error claro y la app sigue operativa.",
+        "El procesamiento no congela la interfaz."
+      ],
+      "open_questions": [
+        "¿Se acepta PDF escaneado (OCR) o queda fuera de alcance?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F11",
+      "name": "docx_import",
+      "title": "Importación de Word (.docx)",
+      "phase": "post_mvp",
+      "scope": "app",
+      "depends_on": ["txt_upload"],
+      "sdd": true,
+      "security_review": true,
+      "description": "Extraer texto de documentos Word.",
+      "acceptance": [
+        "Se extrae el texto de un .docx y pasa por la misma limpieza y normalización.",
+        "Un archivo corrupto o con formato no soportado produce un error claro y la app sigue operativa.",
+        "El procesamiento no congela la interfaz."
+      ],
+      "open_questions": [],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F12",
+      "name": "url_import",
+      "title": "Lectura de páginas web por URL",
+      "phase": "post_mvp",
+      "scope": "proxy",
+      "depends_on": ["text_input_normalization"],
+      "sdd": true,
+      "security_review": true,
+      "description": "Servicio proxy mínimo que descarga una página y devuelve su texto principal en modo lectura, más la integración en la app.",
+      "acceptance": [
+        "El proxy recibe una URL y devuelve el texto principal de la página.",
+        "El proxy rechaza destinos internos o privados (protección SSRF), aplica límites de tamaño y tiempo, y limita la tasa de pedidos.",
+        "Una URL inválida, inaccesible o sin contenido legible produce un error claro.",
+        "La app informa al usuario antes de enviar la URL al servicio."
+      ],
+      "open_questions": [
+        "¿Proxy propio (función serverless) o extensión de navegador?",
+        "¿Dónde se aloja el proxy y quién asume su costo?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    },
+    {
+      "id": "F13",
+      "name": "keyboard_layouts",
+      "title": "Soporte de distintos layouts de teclado",
+      "phase": "post_mvp",
+      "scope": "app",
+      "depends_on": ["typing_engine"],
+      "sdd": true,
+      "security_review": false,
+      "description": "Permitir practicar con distintas distribuciones de teclado.",
+      "acceptance": [
+        "El usuario puede elegir su layout y el motor lo respeta.",
+        "Al menos español latinoamericano e inglés US están cubiertos con tests."
+      ],
+      "open_questions": [
+        "¿Qué layouts son obligatorios además de es-LA y en-US?"
+      ],
+      "status": "pending",
+      "approved_at": null
+    }
+  ]
+}
