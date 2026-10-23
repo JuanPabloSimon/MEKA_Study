@@ -1,75 +1,75 @@
-# React + TypeScript + Vite
+# MEKA Study
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Estudia de manera práctica.
 
-Currently, two official plugins are available:
+MEKA es una aplicación web que combina **estudio y mecanografía al tacto**.
+En lugar de practicar con textos genéricos, escribís tu propio material de
+estudio: al reescribirlo una y otra vez mejorás tu velocidad y precisión
+y, además, reforzás la retención de lo que estás aprendiendo.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+La idea parte de herramientas como [Keybr](https://www.keybr.com/), pero
+enfocada en el estudio con contenido propio.
 
-## React Compiler
+## Estado del proyecto
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🚧 En desarrollo. Se trabaja de forma iterativa e incremental
+siguiendo un flujo de desarrollo guiado por especificaciones (SDD).
 
-## Expanding the ESLint configuration
+## Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### MVP
+- [ ] Pegar texto plano en un cuadro de texto para usarlo como material de práctica.
+- [ ] Sesión de mecanografía con feedback de aciertos y errores.
+- [ ] Métricas básicas (palabras por minuto y precisión).
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Próximas versiones
+- [ ] Importar material desde archivos PDF y Word.
+- [ ] Importar contenido desde una URL.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tecnologías
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- [PENDIENTE: frontend]
+- [PENDIENTE: backend / almacenamiento, si aplica]
+- Desarrollo con [Antigravity](https://antigravity.google/) y flujo SDD
 
+## Requisitos previos
+
+- [PENDIENTE: Node.js u otra versión requerida]
+- Git
+
+## Instalación y uso
+
+```bash
+git clone https://github.com/<usuario>/meka.git
+cd meka
+# [PENDIENTE: comandos de instalación]
+# [PENDIENTE: comando para levantar el entorno de desarrollo]
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Flujo de desarrollo (SDD)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+El proyecto usa desarrollo guiado por especificaciones con cuatro agentes
+que trabajan en secuencia:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Agente | Rol |
+|---|---|
+| `leader` | Coordina el flujo y las etapas |
+| `spec_author` | Redacta las especificaciones |
+| `implementer` | Implementa lo especificado |
+| `reviewer` | Revisa la implementación contra la especificación |
+
+La configuración del arnés se encuentra en `.antigravity/`.
+
+## Estructura del repositorio
 
 ```
+[PENDIENTE: árbol de carpetas]
+```
+
+## Equipo
+
+- [PENDIENTE: integrantes y roles]
+
+## Licencia
+
+[PENDIENTE: licencia]
