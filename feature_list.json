@@ -28,11 +28,10 @@
         "./init.sh termina en verde y ya no muestra la advertencia de 'sin scaffold'."
       ],
       "open_questions": [
-        "¿Se confirma React como librería de UI o el equipo prefiere otra (Svelte, Vue, vanilla)?",
         "¿Dónde se publicará la app (para decidir si hace falta configuración de base path)?"
       ],
-      "status": "pending",
-      "approved_at": null
+      "status": "done",
+      "approved_at": "2026-10-28"
     },
     {
       "id": "F02",

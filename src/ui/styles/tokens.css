@@ -1,0 +1,47 @@
+:root {
+  --color-text: #f9f0f1;
+  --color-background: #003052;
+  --color-border: #000000;
+  --color-primary: #d4f4dd;
+  --color-secondary: #748cab;
+  --color-error: #9e1a30;
+
+  --font-heading: "Basic", sans-serif;
+  --font-body: "Montserrat", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+
+  --space-base: 8px;
+  --space-md: 16px;
+  --space-lg: 32px;
+
+  --radius-none: 0px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+  border-radius: var(--radius-none);
+}
