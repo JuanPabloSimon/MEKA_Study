@@ -1,9 +1,9 @@
 # Estado actual
 
-- **Fecha:** (completar al iniciar la primera sesión)
-- **Feature en curso:** ninguna
-- **Última acción:** repositorio inicializado con el arnés SDD; sin código todavía.
-- **Siguiente acción sugerida:** arrancar con `F01 project_scaffold`. El leader debe presentar al humano sus `open_questions` antes de lanzar al `spec_author`.
+- **Fecha:** 2026-10-29
+- **Feature en curso:** ninguna (`F01 project_scaffold` cerrada como `done` el `2026-10-29`)
+- **Última acción:** `reviewer` aprobó `F01 project_scaffold` (`APPROVED` en `progress/review_app_project_scaffold.md`). Se verificaron los puntos de control C1–C6 de `CHECKPOINTS.md` y se pasó `F01` a `done`.
+- **Siguiente acción sugerida:** iniciar `F02 typing_engine` (primera feature `pending` con dependencias `done`), presentando sus 3 `open_questions` al humano antes de lanzar `spec_author`.
 - **Bloqueos:** ninguno
 
 ## Notas
